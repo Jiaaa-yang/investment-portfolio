@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Investment Portfolio</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <!-- Google fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com"> 
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+    <!-- Main section with investment holdings -->
+    <section class="dark main">
+        <p class="date">{{ date }}</p>
+        <div class="holdings">
+            <h1 class="holdings-title">Holdings</h1>
+            <p class="holdings-detail">Yangzijiang Shipbuilding (SGX: BS6) - 800 shares</p>
+            <p class="holdings-detail">Alibaba Group (NYSE: BABA) - 8 Shares</p>
+        </div>
+    </section>
+
+    <!-- Funding and transaction history -->
+    <section class="light history">
+        <div class="row">
+            <div class="col-lg-6 transactions">
+                <h2 class="history-title">Transaction history</h2>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">20 Dec 2020 - $1000</li>
+                    <li class="list-group-item">27 Dec 2020 - $1000</li>
+                    <li class="list-group-item">20 Dec 2020 - $1000</li>
+                    <li class="list-group-item">20 Dec 2020 - $1000</li>
+                    <li class="list-group-item">20 Dec 2020 - $1000</li>
+                </ul>
+                <div class="update-button">
+                    <button class="btn btn-outline-dark">Update</button>
+                </div>
+            </div>
+            <div class="col-lg-6 fundings">
+                <h2 class="history-title">Funding history</h2>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Buy YZJ 500 shares @ $0.940</li>
+                    <li class="list-group-item">Buy YZJ 300 Shares @ $0.945</li>
+                    <li class="list-group-item">20 Dec 2020 - $1000</li>
+                    <li class="list-group-item">20 Dec 2020 - $1000</li>
+                    <li class="list-group-item">20 Dec 2020 - $1000</li>
+                </ul>
+                <div class="update-button">
+                    <button class="btn btn-outline-dark">Update</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Summary section -->
+    <section class="dark summary">
+        <div class="row">
+            <div class="col-lg-4">
+                <h2>Net profits</h2>
+                <ul class="list-group list-group-flush summary-stats">
+                    <li class="list-group-item">SGD $0.945</li>
+                    <li class="list-group-item">USD $197.54</li>
+                </ul>
+            </div>
+            <div class="col-lg-4">
+                <h2>Commissions paid</h2>
+                <ul class="list-group list-group-flush summary-stats">
+                    <li class="list-group-item">SGD $0.945</li>
+                    <li class="list-group-item">USD $197.54</li>
+                </ul>
+            </div>
+            <div class="col-lg-4">
+                <h2>Cash balance</h2>
+                <ul class="list-group list-group-flush summary-stats">
+                    <li class="list-group-item">SGD $0.945</li>
+                    <li class="list-group-item">USD $197.54</li>
+                </ul>
+                <div class="update-button">
+                    <button class="btn btn-outline-light">Update</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer section -->
+    <footer class="light">
+        Lye Design © 2020. All rights reserved.
+    </footer>
+</body>
+</html>
