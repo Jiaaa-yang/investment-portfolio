@@ -1,0 +1,15 @@
+{% extends "update-form-layout.html" %}
+
+{% block form %}
+    <div class="form-group py-3">
+        <label>SGD Balance</label>
+            <input type="text" class="form-control" name="sgd_balance" value="{{ sgd_balance }}">
+        </div>
+    <div class="form-group">
+        <label>USD Balance</label>
+        <input type="text" class="form-control" name="usd_balance" value="{{ usd_balance }}">
+    </div>
+    <div class="update-button py-3">
+        <button class="btn btn-outline-light" type="submit">Confirm</button>
+    </div>
+{% endblock %}

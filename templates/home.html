@@ -21,8 +21,9 @@
         <p class="date">{{ date }}</p>
         <div class="holdings">
             <h1 class="holdings-title">Holdings</h1>
-            <p class="holdings-detail">Yangzijiang Shipbuilding (SGX: BS6) - 800 shares</p>
-            <p class="holdings-detail">Alibaba Group (NYSE: BABA) - 8 Shares</p>
+            {% for item in holdings %}
+                <p class="holdings-detail"> {{ item.get("name") }} - {{ item.get("quantity") }} shares</p>
+            {% endfor %}
         </div>
     </section>
 
@@ -32,27 +33,24 @@
             <div class="col-lg-6 transactions">
                 <h2 class="history-title">Transaction history</h2>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">20 Dec 2020 - $1000</li>
-                    <li class="list-group-item">27 Dec 2020 - $1000</li>
-                    <li class="list-group-item">20 Dec 2020 - $1000</li>
-                    <li class="list-group-item">20 Dec 2020 - $1000</li>
-                    <li class="list-group-item">20 Dec 2020 - $1000</li>
+                    {% for transaction in transactions %}
+                        <li class="list-group-item">{{ transaction.get("direction") }} {{ transaction.get("name") }},<br>
+                        {{ transaction.get("quantity") }} shares @ {{ transaction.get("currency") }} ${{ transaction.get("price") }} </li>
+                    {% endfor %}
                 </ul>
                 <div class="update-button">
-                    <button class="btn btn-outline-dark">Update</button>
+                    <a href="{{ url_for('update_transaction') }}"><button class="btn btn-outline-dark">Update</button></a>
                 </div>
             </div>
             <div class="col-lg-6 fundings">
                 <h2 class="history-title">Funding history</h2>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Buy YZJ 500 shares @ $0.940</li>
-                    <li class="list-group-item">Buy YZJ 300 Shares @ $0.945</li>
-                    <li class="list-group-item">20 Dec 2020 - $1000</li>
-                    <li class="list-group-item">20 Dec 2020 - $1000</li>
-                    <li class="list-group-item">20 Dec 2020 - $1000</li>
+                    {% for funding in fundings %}
+                        <li class="list-group-item">{{ funding.get("date") }} - SGD ${{ funding.get("amount") }}</li>
+                    {% endfor %}
                 </ul>
                 <div class="update-button">
-                    <button class="btn btn-outline-dark">Update</button>
+                    <a href="{{ url_for('update_funding') }}"><button class="btn btn-outline-dark">Update</button></a>
                 </div>
             </div>
         </div>
@@ -78,11 +76,11 @@
             <div class="col-lg-4">
                 <h2>Cash balance</h2>
                 <ul class="list-group list-group-flush summary-stats">
-                    <li class="list-group-item">SGD $0.945</li>
-                    <li class="list-group-item">USD $197.54</li>
+                    <li class="list-group-item">SGD ${{ sgd_balance }}</li>
+                    <li class="list-group-item">USD ${{ usd_balance }}</li>
                 </ul>
                 <div class="update-button">
-                    <button class="btn btn-outline-light">Update</button>
+                    <a href="{{ url_for('update_balance') }}"><button class="btn btn-outline-light">Update</button></a>
                 </div>
             </div>
         </div>
