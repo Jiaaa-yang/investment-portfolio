@@ -3,3 +3,4 @@ data.json
 /venv
 .vscode
 .DS_Store
+mongo.py

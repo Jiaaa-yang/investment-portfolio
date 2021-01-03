@@ -22,7 +22,7 @@
         <div class="holdings">
             <h1 class="holdings-title">Holdings</h1>
             {% for item in holdings %}
-                <p class="holdings-detail"> {{ item.get("name") }} - {{ item.get("quantity") }} shares</p>
+                <p class="holdings-detail"> {{ item.get("stock") }} ({{ item.get("code") }}) - {{ item.get("quantity") }} shares</p>
             {% endfor %}
         </div>
     </section>
@@ -34,7 +34,7 @@
                 <h2 class="history-title">Transaction history</h2>
                 <ul class="list-group list-group-flush">
                     {% for transaction in transactions %}
-                        <li class="list-group-item">{{ transaction.get("direction") }} {{ transaction.get("name") }},<br>
+                        <li class="list-group-item">{{ transaction.get("direction") }} {{ transaction.get("stock") }} ({{ transaction.get("code") }}),<br>
                         {{ transaction.get("quantity") }} shares @ {{ transaction.get("currency") }} ${{ transaction.get("price") }} </li>
                     {% endfor %}
                 </ul>
@@ -46,7 +46,7 @@
                 <h2 class="history-title">Funding history</h2>
                 <ul class="list-group list-group-flush">
                     {% for funding in fundings %}
-                        <li class="list-group-item">{{ funding.get("date") }} - SGD ${{ funding.get("amount") }}</li>
+                        <li class="list-group-item">{{ funding.get("date") }} - SGD ${{ "{:.2f}".format(funding.get("amount")) }}</li>
                     {% endfor %}
                 </ul>
                 <div class="update-button">

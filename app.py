@@ -1,25 +1,21 @@
 from flask import Flask, url_for, render_template, request, redirect
-from update_data import read_data, write_data
+from portfolio import load_portfolio
 from datetime import datetime
 
 
-# Key shortcuts for accessing data
-SGD_KEY = "sgd_balance"
-USD_KEY = "usd_balance"
-
-
 app = Flask(__name__)
-data_file = 'data.json'
 current_date = datetime.now().strftime("%d %B %Y")
+portfolio = load_portfolio()
 
 
 @app.route("/")
 def home():
-    sgd_balance = read_data(data_file, SGD_KEY)
-    usd_balance = read_data(data_file, USD_KEY)
-    transactions = read_data(data_file, "transactions")
-    fundings = read_data(data_file, "fundings")
-    return render_template("home.html", date=current_date, sgd_balance=sgd_balance,
+    sgd_balance = "{:.2f}".format(portfolio.sgd_balance)
+    usd_balance = "{:.2f}".format(portfolio.usd_balance)
+    transactions = portfolio.transaction_history
+    fundings = portfolio.funding_history
+    holdings = portfolio.holdings
+    return render_template("home.html", date=current_date, sgd_balance=sgd_balance, holdings=holdings,
     usd_balance=usd_balance, transactions=transactions, fundings=fundings)
 
 
@@ -28,15 +24,16 @@ def update_balance():
     if request.method == "POST":
         # Update balance data
         form_data = request.form
-        new_sgd_balance = form_data.get(SGD_KEY)
-        new_usd_balance = form_data.get(USD_KEY)
-        write_data(data_file, SGD_KEY, new_sgd_balance)
-        write_data(data_file, USD_KEY, new_usd_balance)
+        new_sgd_balance = float(form_data.get("sgd_balance"))
+        new_usd_balance = float(form_data.get("usd_balance"))
+        portfolio.update_balance("SGD", new_sgd_balance)
+        portfolio.update_balance("USD", new_usd_balance)
+        portfolio.save()
         return redirect(url_for('home'))
 
     else:
-        current_sgd_balance = read_data(data_file, SGD_KEY)
-        current_usd_balance = read_data(data_file, USD_KEY)
+        current_sgd_balance = "{:.2f}".format(portfolio.sgd_balance)
+        current_usd_balance = "{:.2f}".format(portfolio.usd_balance)
         return render_template('update-balance.html', sgd_balance=current_sgd_balance,
                                 usd_balance=current_usd_balance)
 
@@ -46,11 +43,10 @@ def update_funding():
     if request.method == "POST":
         # Append new funding to funding history
         form_data = request.form
-        new_funding = {
-            "date": form_data.get("input_date"),
-            "amount": form_data.get("amount")
-        }
-        write_data(data_file, "fundings", new_funding)
+        date = form_data.get("input_date")
+        amount = float(form_data.get("amount"))
+        portfolio.fund_account(date, amount)
+        portfolio.save()
         return redirect(url_for('home'))
 
     else:
@@ -62,14 +58,18 @@ def update_transaction():
     if request.method == "POST":
         # Append new transaction to transaction history
         form_data = request.form
-        new_transaction = {
-            "name": form_data.get("stock_name"),
-            "direction": form_data.get("stock_direction"),
-            "price": form_data.get("stock_price"),
-            "currency": form_data.get("stock_currency"),
-            "quantity": form_data.get("stock_quantity")
-        }
-        write_data(data_file, "transactions", new_transaction)
+        name = form_data.get("stock_name")
+        market_code = form_data.get("stock_code")
+        direction = form_data.get("stock_direction")
+        price = float(form_data.get("stock_price"))
+        currency = form_data.get("stock_currency")
+        quantity = int(form_data.get("stock_quantity"))
+        if direction == "BUY":
+            portfolio.purchase_stock(name, market_code, quantity, price, currency)
+        else:
+            portfolio.sell_stock(name, market_code, quantity, price, currency)
+
+        portfolio.save()
         return redirect(url_for('home'))
 
     else:
