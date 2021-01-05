@@ -1,5 +1,8 @@
-import json
-data_file = "data.json"
+import pymongo
+import os
+client = pymongo.MongoClient(os.getenv("MONGODB_URI"))
+cluster = client.test.test
+
 
 class MyPortfolio():
     def __init__(self, sgd_balance=0, usd_balance=0, 
@@ -81,11 +84,12 @@ class MyPortfolio():
 
     
     def save(self):
-        with open(data_file, "w") as file:
-            json.dump(self.__dict__, file, indent=4)
+        data = {"_id":0}
+        data.update(self.__dict__)
+        cluster.find_one_and_replace({"_id":0}, data)
 
 
 def load_portfolio():
-    with open(data_file, "r") as file:
-        data = json.load(file)
-        return MyPortfolio(**data)
+    data = cluster.find_one({"_id":0})
+    del data["_id"]
+    return MyPortfolio(**data)

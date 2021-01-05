@@ -1,6 +1,9 @@
+.env
+backup.json
 __pycache__
 data.json
 /venv
 .vscode
 .DS_Store
 mongo.py
+data

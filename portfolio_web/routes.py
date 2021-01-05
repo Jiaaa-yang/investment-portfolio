@@ -1,11 +1,11 @@
-from flask import Flask, url_for, render_template, request, redirect
-from portfolio import load_portfolio
+from flask import render_template, url_for, redirect, request
 from datetime import datetime
+from portfolio_web.portfolio import load_portfolio
+from portfolio_web import app
 
 
-app = Flask(__name__)
-current_date = datetime.now().strftime("%d %B %Y")
 portfolio = load_portfolio()
+current_date = datetime.now().strftime("%d %B %Y")
 
 
 @app.route("/")
@@ -74,7 +74,3 @@ def update_transaction():
 
     else:
         return render_template("update-transactions.html")
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
