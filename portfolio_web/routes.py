@@ -1,20 +1,20 @@
 from flask import render_template, url_for, redirect, request
 from datetime import datetime
-from portfolio_web.portfolio import load_portfolio
 from portfolio_web import app
+from portfolio_web.portfolio_update import *
 
 
-portfolio = load_portfolio()
 current_date = datetime.now().strftime("%d %B %Y")
 
 
 @app.route("/")
 def home():
-    sgd_balance = "{:.2f}".format(portfolio.sgd_balance)
-    usd_balance = "{:.2f}".format(portfolio.usd_balance)
-    transactions = portfolio.transaction_history
-    fundings = portfolio.funding_history
-    holdings = portfolio.holdings
+    portfolio = read_portfolio()
+    sgd_balance = "{:.2f}".format(portfolio["sgd_balance"])
+    usd_balance = "{:.2f}".format(portfolio["usd_balance"])
+    holdings = portfolio["holdings"]
+    transactions = get_history("transaction") 
+    fundings = get_history("funding")
     return render_template("home.html", date=current_date, sgd_balance=sgd_balance, holdings=holdings,
     usd_balance=usd_balance, transactions=transactions, fundings=fundings)
 
@@ -26,14 +26,13 @@ def update_balance():
         form_data = request.form
         new_sgd_balance = float(form_data.get("sgd_balance"))
         new_usd_balance = float(form_data.get("usd_balance"))
-        portfolio.update_balance("SGD", new_sgd_balance)
-        portfolio.update_balance("USD", new_usd_balance)
-        portfolio.save()
+        update_account_balance(new_sgd_balance, new_usd_balance)
         return redirect(url_for('home'))
 
     else:
-        current_sgd_balance = "{:.2f}".format(portfolio.sgd_balance)
-        current_usd_balance = "{:.2f}".format(portfolio.usd_balance)
+        portfolio = read_portfolio()
+        current_sgd_balance = "{:.2f}".format(portfolio["sgd_balance"])
+        current_usd_balance = "{:.2f}".format(portfolio["usd_balance"])
         return render_template('update-balance.html', sgd_balance=current_sgd_balance,
                                 usd_balance=current_usd_balance)
 
@@ -45,8 +44,7 @@ def update_funding():
         form_data = request.form
         date = form_data.get("input_date")
         amount = float(form_data.get("amount"))
-        portfolio.fund_account(date, amount)
-        portfolio.save()
+        fund_account(date, amount)
         return redirect(url_for('home'))
 
     else:
@@ -58,18 +56,18 @@ def update_transaction():
     if request.method == "POST":
         # Append new transaction to transaction history
         form_data = request.form
-        name = form_data.get("stock_name")
-        market_code = form_data.get("stock_code")
-        direction = form_data.get("stock_direction")
-        price = float(form_data.get("stock_price"))
-        currency = form_data.get("stock_currency")
-        quantity = int(form_data.get("stock_quantity"))
-        if direction == "BUY":
-            portfolio.purchase_stock(name, market_code, quantity, price, currency)
-        else:
-            portfolio.sell_stock(name, market_code, quantity, price, currency)
+        name = form_data.get("name")
+        market_code = form_data.get("market_code")
+        price = float(form_data.get("price"))
+        quantity = int(form_data.get("quantity"))
+        currency = form_data.get("currency")
+        direction = form_data.get("inlineRadioOptions")
 
-        portfolio.save()
+        if direction == "BUY":
+            purchase_stock(name, market_code, quantity, price, currency)
+        else:
+            sell_stock(name, market_code, quantity, price, currency)
+
         return redirect(url_for('home'))
 
     else:

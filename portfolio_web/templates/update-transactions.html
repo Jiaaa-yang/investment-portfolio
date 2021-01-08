@@ -1,31 +1,38 @@
 {% extends "update-form-layout.html" %}
 
 {% block form %}
-    <div class="form-group">
+    <div class="form-group py-1">
         <label>Stock</label>
-            <input type="text" class="form-control" name="stock_name">
+            <input type="text" class="form-control" name="name">
     </div>
     <div class="form-group py-1">
         <label>Market Code</label>
-        <input type="text" class="form-control" name="stock_code">
-    </div>
-    <div class="form-group py-1">
-        <label>Direction</label>
-        <input type="text" class="form-control" name="stock_direction">
-    </div>
-    <div class="form-group py-1">
-        <label>Currency</label>
-        <input type="text" class="form-control" name="stock_currency">
+        <input type="text" class="form-control" name="market_code">
     </div>
     <div class="form-group py-1">
         <label>Price</label>
-        <input type="text" class="form-control" name="stock_price">
+        <input type="number" step="0.001" class="form-control" name="price" autocomplete="off">
     </div>
-    <div class="form-group">
+    <div class="form-group py-1">
         <label>Quantity</label>
-        <input type="text" class="form-control" name="stock_quantity">
+        <input type="number" step="0.001" class="form-control" name="quantity" autocomplete="off">
+    </div>
+    <div class="form-group py-1">
+        <label>Currency</label>
+        <select class="form-control dropdown" name="currency">
+            <option>SGD</option>
+            <option>USD</option>
+        </select>
     </div>
     <div class="update-button py-3">
+        <div class="form-check form-check-inline">
+            <label class="form-check-label">BUY</label>
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" value="BUY">
+        </div>
+        <div class="form-check form-check-inline">
+            <label class="form-check-label">SELL</label>
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" value="SELL">
+        </div>
         <button class="btn btn-outline-light" type="submit">Confirm</button>
     </div>
 {% endblock %}
