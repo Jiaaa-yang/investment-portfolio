@@ -43,10 +43,25 @@
                 </div>
             </div>
             <div class="col-lg-6 fundings">
+                <!-- History for account fundings and currency exchange -->
                 <h2 class="history-title">Funding history</h2>
                 <ul class="list-group list-group-flush">
-                    {% for funding in fundings %}
-                        <li class="list-group-item">{{ funding.get("date") }} - SGD ${{ "{:.2f}".format(funding.get("amount")) }}</li>
+                    {% for balance in balances %}
+                        <!-- For funding type -->
+                        {% if balance["type"] == "funding" %}
+                            {% set funding = balance["details"] %}
+                            <li class="list-group-item">Funding <br> {{ funding.get("date") }} - SGD ${{ "{:.2f}".format(funding.get("amount")) }}</li>
+                        <!-- For currency exchange type -->
+                        {% else %}
+                            {% set exchange = balance["details"] %}
+                            {% if exchange["direction"] == "SGD to USD" %}
+                                <li class="list-group-item">Currency Exchange <br> {{ exchange.get("date") }} - SGD ${{ "{:.2f}".format(exchange.get("sgd")) }} 
+                                to USD ${{ "{:.2f}".format(exchange.get("usd")) }} </li>
+                            {% else %}
+                                <li class="list-group-item">Currency Exchange <br> {{ exchange.get("date") }} - USD ${{ "{:.2f}".format(exchange.get("usd")) }} 
+                                to SGD ${{ "{:.2f}".format(exchange.get("sgd")) }} </li>
+                            {% endif %}
+                        {% endif %}
                     {% endfor %}
                 </ul>
                 <div class="update-button">
@@ -62,22 +77,22 @@
             <div class="col-lg-4">
                 <h2>Net profits</h2>
                 <ul class="list-group list-group-flush summary-stats">
-                    <li class="list-group-item">SGD $0.945</li>
-                    <li class="list-group-item">USD $197.54</li>
+                    <li class="list-group-item">SGD ${{ profits_sgd }}</li>
+                    <li class="list-group-item">USD ${{ profits_usd }}</li>
                 </ul>
             </div>
             <div class="col-lg-4">
                 <h2>Commissions paid</h2>
                 <ul class="list-group list-group-flush summary-stats">
-                    <li class="list-group-item">SGD $0.945</li>
-                    <li class="list-group-item">USD $197.54</li>
+                    <li class="list-group-item">SGD ${{ commissions_sgd }}</li>
+                    <li class="list-group-item">USD ${{ commissions_usd }}</li>
                 </ul>
             </div>
             <div class="col-lg-4">
                 <h2>Cash balance</h2>
                 <ul class="list-group list-group-flush summary-stats">
-                    <li class="list-group-item">SGD ${{ sgd_balance }}</li>
-                    <li class="list-group-item">USD ${{ usd_balance }}</li>
+                    <li class="list-group-item">SGD ${{ cash_sgd }}</li>
+                    <li class="list-group-item">USD ${{ cash_usd }}</li>
                 </ul>
                 <div class="update-button">
                     <a href="{{ url_for('update_balance') }}"><button class="btn btn-outline-light">Update</button></a>
@@ -88,7 +103,7 @@
 
     <!-- Footer section -->
     <footer class="light">
-        Lye Design © 2020. All rights reserved.
+        Project-based learning for some basic web development. Started: 31 Dec 2020 
     </footer>
 </body>
 </html>

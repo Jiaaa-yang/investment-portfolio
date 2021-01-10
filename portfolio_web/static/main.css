@@ -20,6 +20,10 @@ h1, h2, h3, h4, h5, h6 {
     color: #222831;
 }
 
+.hide {
+    display: none;
+}
+
 /* Removes arrow for number type input boxes */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -27,7 +31,7 @@ input::-webkit-inner-spin-button {
     margin: 0;
 }
 
-/* Give select menus arrows at end of box */
+/* Give select menus arrows at end of dropdown inputs */
 .dropdown {
     -webkit-appearance: menulist;
 }
@@ -114,6 +118,6 @@ footer {
     transform: translate(-50%, -50%);
 }
 
-.balance-update-form {
+.update-form {
     width: 20%
 }

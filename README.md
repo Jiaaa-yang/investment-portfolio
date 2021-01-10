@@ -1,1 +1,1 @@
-My first web application built to track my investment history.
+A web application to track investments portfolio built using python flask framework.

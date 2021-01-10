@@ -9,14 +9,22 @@ current_date = datetime.now().strftime("%d %B %Y")
 
 @app.route("/")
 def home():
-    portfolio = read_portfolio()
-    sgd_balance = "{:.2f}".format(portfolio["sgd_balance"])
-    usd_balance = "{:.2f}".format(portfolio["usd_balance"])
-    holdings = portfolio["holdings"]
-    transactions = get_history("transaction") 
-    fundings = get_history("funding")
-    return render_template("home.html", date=current_date, sgd_balance=sgd_balance, holdings=holdings,
-    usd_balance=usd_balance, transactions=transactions, fundings=fundings)
+    profits = get_main_data("profits")
+    commissions = get_main_data("commissions") 
+    cash_balance = get_main_data("cash_balance")
+    profits_sgd = "{:.2f}".format(profits["sgd"])
+    profits_usd = "{:.2f}".format(profits["usd"])
+    commissions_sgd = "{:.2f}".format(commissions["sgd"])
+    commissions_usd = "{:.2f}".format(commissions["usd"])
+    cash_sgd = "{:.2f}".format(cash_balance["sgd"])
+    cash_usd = "{:.2f}".format(cash_balance["usd"])
+    holdings = get_main_data("holdings")
+    transactions = get_transaction_history()
+    balances = get_balance_history()
+    return render_template("home.html", date=current_date, holdings=holdings,
+    transactions=transactions, balances=balances, profits_sgd=profits_sgd,
+    profits_usd=profits_usd, commissions_sgd=commissions_sgd, commissions_usd=commissions_usd,
+    cash_sgd=cash_sgd, cash_usd=cash_usd)
 
 
 @app.route("/update-balance", methods=["GET", "POST"])
@@ -24,27 +32,40 @@ def update_balance():
     if request.method == "POST":
         # Update balance data
         form_data = request.form
-        new_sgd_balance = float(form_data.get("sgd_balance"))
-        new_usd_balance = float(form_data.get("usd_balance"))
-        update_account_balance(new_sgd_balance, new_usd_balance)
+        new_cash_sgd = float(form_data.get("cash_sgd"))
+        new_cash_usd = float(form_data.get("cash_usd"))
+        update_main_data("cash_balance", new_cash_sgd, new_cash_usd)
         return redirect(url_for('home'))
 
     else:
-        portfolio = read_portfolio()
-        current_sgd_balance = "{:.2f}".format(portfolio["sgd_balance"])
-        current_usd_balance = "{:.2f}".format(portfolio["usd_balance"])
-        return render_template('update-balance.html', sgd_balance=current_sgd_balance,
-                                usd_balance=current_usd_balance)
+        cash_balance = get_main_data("cash_balance")
+        cash_sgd = "{:.2f}".format(cash_balance["sgd"])
+        cash_usd = "{:.2f}".format(cash_balance["usd"])
+        return render_template('update-balance.html', cash_sgd=cash_sgd, cash_usd=cash_usd)
 
 
 @app.route("/update-funding", methods=["GET", "POST"])
 def update_funding():
     if request.method == "POST":
-        # Append new funding to funding history
         form_data = request.form
-        date = form_data.get("input_date")
-        amount = float(form_data.get("amount"))
-        fund_account(date, amount)
+        funding_type = form_data.get("type")
+        # Update new funding
+        if funding_type == "funding":
+            date = form_data.get("funding_date")
+            amount = float(form_data.get("amount"))
+            fund_account(date, amount)
+
+        # Update new currency exchange
+        elif funding_type == "currency_exchange":
+            date = form_data.get("exchange_date")
+            direction = form_data.get("direction") 
+            sgd = float(form_data.get("sgd"))
+            usd = float(form_data.get("usd"))
+            exchange_currency(date, direction, sgd, usd)
+            
+        else:
+            raise Exception("Unknown funding type")
+
         return redirect(url_for('home'))
 
     else:

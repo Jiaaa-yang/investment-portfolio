@@ -3,11 +3,11 @@
 {% block form %}
     <div class="form-group py-3">
         <label>SGD Balance</label>
-            <input type="text" class="form-control" name="sgd_balance" value="{{ sgd_balance }}">
-        </div>
+        <input type="number" step="0.01" class="form-control" name="cash_sgd" value="{{ cash_sgd }}" autocomplete="off">
+    </div>
     <div class="form-group">
         <label>USD Balance</label>
-        <input type="text" class="form-control" name="usd_balance" value="{{ usd_balance }}">
+        <input type="number" step="0.01" class="form-control" name="cash_usd" value="{{ cash_usd }}" autocomplete="off">
     </div>
     <div class="update-button py-3">
         <button class="btn btn-outline-light" type="submit">Confirm</button>
